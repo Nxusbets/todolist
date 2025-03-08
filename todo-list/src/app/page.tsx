@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useContext } from 'react';
-import { UserContext } from '../contexts/UserContext';
-import TodoList from '@/components/TodoList';
-import LoginForm from '@/components/LoginForm';
-import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import React, { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
+import TodoList from "@/components/TodoList";
+import LoginForm from "@/components/LoginForm";
+import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function Home() {
     const { user } = useContext(UserContext);
-    console.log(user)
+    console.log(user);
 
     if (user) {
         return (

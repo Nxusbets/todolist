@@ -12,11 +12,11 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    rules: {
-      "semi": ["error", "always"], // Ejemplo: requerir punto y coma al final de las líneas
-      "quotes": ["error", "double"], // Ejemplo: requerir comillas dobles
-    },
-  },
+    "rules": {
+      "quotes": ["off"],
+      "semi": ["off"]
+    }
+  }
 ];
 
 export default eslintConfig;

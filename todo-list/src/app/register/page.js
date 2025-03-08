@@ -1,8 +1,8 @@
 "use client";
 
-import React from 'react';
-import RegisterForm from '@/components/RegisterForm';
-import Link from 'next/link';
+import React from "react";
+import RegisterForm from "@/components/RegisterForm";
+import Link from "next/link";
 
 export default function RegisterPage() {
     return (

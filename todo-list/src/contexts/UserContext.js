@@ -1,6 +1,6 @@
 'use client'
-import React, { createContext, useState, useEffect } from 'react';
-import { auth, analytics } from '../firebase';
+import React, { createContext, useState, useEffect } from "react";
+import { auth, analytics } from "../firebase";
 
 export const UserContext = createContext(null);
 
