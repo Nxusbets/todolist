@@ -1,39 +1,25 @@
-'use client'
-import React, { createContext, useState, useEffect } from "react";
-import { auth, analytics } from "../firebase";
+"use client";
 
-export const UserContext = createContext(null);
+import { createContext, useState, useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
+
+export const UserContext = createContext({ user: null }); // Valor inicial es un objeto
 
 export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [authInitialized, setAuthInitialized] = useState(false); // Add state for auth initialization
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const initAuth = async () => { // Define a function to initialize auth
-            await new Promise(resolve => { // Wait for auth to be ready
-                const unsubscribe = auth.onAuthStateChanged(() => {
-                    setAuthInitialized(true); // Set authInitialized to true
-                    unsubscribe();
-                    resolve();
-                });
-            });
-        };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
 
-        initAuth(); // Call the function to initialize auth
-    },);
+    return () => unsubscribe();
+  }, []);
 
-    useEffect(() => {
-        if (authInitialized) { // Check if auth is initialized
-            const unsubscribe = auth.onAuthStateChanged(userAuth => {
-                setUser(userAuth);
-            });
-            return unsubscribe;
-        }
-    }, [authInitialized]); // Dependency on authInitialized
-
-    return (
-        <UserContext.Provider value={{ user, analytics }}>
-            {children}
-        </UserContext.Provider>
-    );
+  return (
+    <UserContext.Provider value={{ user }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
