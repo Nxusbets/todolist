@@ -37,7 +37,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "src/components/Navbar.js", "src/components/RegisterForm.js", "src/components/LoginForm.js"  ],
   "exclude": [
     "node_modules"
   ]

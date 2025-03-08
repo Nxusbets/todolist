@@ -1,12 +1,37 @@
+"use client";
+
+import React, { useContext } from 'react';
+import { UserContext } from '../contexts/UserContext';
 import TodoList from '@/components/TodoList';
+import LoginForm from '@/components/LoginForm';
+import Link from 'next/link';
+import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import "@fortawesome/fontawesome-free/css/all.min.css";
 
 export default function Home() {
-  return (
-      <main style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <TodoList style={{ flex: 1 }} />
-          <Footer />
-      </main>
-  );
+    const { user } = useContext(UserContext);
+    console.log(user)
+
+    if (user) {
+        return (
+            <>
+                <Navbar />
+                <TodoList />
+                <Footer />
+            </>
+        );
+    }
+
+    return (
+        <>
+            <Navbar />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+                <LoginForm />
+                <p style={{ marginTop: '1rem' }}>
+                    ¿No tienes una cuenta? <Link href="/register">Regístrate gratis</Link>
+                </p>
+            </div>
+            
+        </>
+    );
 }

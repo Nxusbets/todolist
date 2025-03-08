@@ -1,11 +1,14 @@
-'use client';
-import React, { useState, useEffect } from 'react';
+"use client";
+
+import React, { useState, useEffect, useContext } from 'react';
 import { Container, Form, Button, ListGroup } from 'react-bootstrap';
 import './TodoList.css';
-
+import { UserContext } from '../contexts/UserContext';
+import { db } from '../firebase';
+import { collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 
 interface Todo {
-    id: number;
+    id: string; // Cambiado a string para Firestore
     text: string;
     completed: boolean;
     category: string;
@@ -22,6 +25,7 @@ const TodoList: React.FC = () => {
     const [dueDate, setDueDate] = useState('');
     const [notes, setNotes] = useState('');
     const [darkMode, setDarkMode] = useState(false);
+    const { user } = useContext(UserContext); // Obtener el usuario del contexto
 
     useEffect(() => {
         if (darkMode) {
@@ -30,6 +34,22 @@ const TodoList: React.FC = () => {
             document.body.classList.remove('dark-mode');
         }
     }, [darkMode]);
+
+    useEffect(() => {
+        if (user) {
+            console.log("User Data:", user);
+            const todoCollection = collection(db, 'users', user.uid, 'todos');
+            const unsubscribe = onSnapshot(todoCollection, (snapshot) => {
+                console.log("Firestore Snapshot:", snapshot); // Agrega esta línea
+                const todosData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log("Todos Data:", todosData); // Agrega esta línea
+                setTodos(todosData);
+            });
+            return unsubscribe;
+        } else {
+            setTodos([]);
+        }
+    }, [user]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -51,32 +71,48 @@ const TodoList: React.FC = () => {
         setNotes(e.target.value);
     };
 
-    const handleAddTodo = () => {
-        if (inputValue.trim() !== '') {
-            setTodos([
-                ...todos,
-                {
-                    id: Date.now(),
+    const handleAddTodo = async () => {
+        if (inputValue.trim() !== '' && user) {
+            try {
+                const todoCollection = collection(db, 'users', user.uid, 'todos');
+                const docRef = await addDoc(todoCollection, {
                     text: inputValue,
                     completed: false,
                     category,
                     priority,
                     dueDate,
                     notes,
-                },
-            ]);
-            setInputValue('');
-            setDueDate('');
-            setNotes('');
+                });
+                console.log("Todo added with ID:", docRef.id); // Correcto: docRef.id is defined
+                setInputValue('');
+                setDueDate('');
+                setNotes('');
+            } catch (error) {
+                console.error("Error adding todo:", error);
+            }
         }
     };
 
-    const handleToggleTodo = (id: number) => {
-        setTodos(todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo));
+    const handleToggleTodo = async (id: string, completed: boolean) => {
+        if (user) {
+            try {
+                const todoDoc = doc(db, 'users', user.uid, 'todos', id);
+                await updateDoc(todoDoc, { completed: !completed });
+            } catch (error) {
+                console.error("Error toggling todo:", error);
+            }
+        }
     };
 
-    const handleDeleteTodo = (id: number) => {
-        setTodos(todos.filter(todo => todo.id !== id));
+    const handleDeleteTodo = async (id: string) => {
+        if (user) {
+            try {
+                const todoDoc = doc(db, 'users', user.uid, 'todos', id);
+                await deleteDoc(todoDoc);
+            } catch (error) {
+                console.error("Error deleting todo:", error);
+            }
+        }
     };
 
     const getPriorityColor = (priority: string) => {
@@ -112,24 +148,25 @@ const TodoList: React.FC = () => {
             <Container className="notebook-page">
                 <h1 className="text-center mb-4">To-Do List</h1>
                 <Form.Check
-                        type="switch"
-                        id="dark-mode-switch"
-                        label="Modo Oscuro"
-                        checked={darkMode}
-                        onChange={() => setDarkMode(!darkMode)}
-                        style={{ marginLeft: 'auto' }}
-                    />
+                    type="switch"
+                    id="dark-mode-switch"
+                    label="Modo Oscuro"
+                    checked={darkMode}
+                    onChange={() => setDarkMode(!darkMode)}
+                    style={{ marginLeft: 'auto' }}
+                />
                 <Form className="mb-4">
-                    <Form.Group className="mb-3">
+                    <Form.Group className="mb-3" controlId="formBasicTodo">
+                        <Form.Label>Nueva Tarea</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Add new todo"
+                            placeholder="Ingresa una nueva tarea"
                             value={inputValue}
                             onChange={handleInputChange}
-                            className="rounded-0"
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3">
+
+                    <Form.Group className="mb-3" controlId="formBasicCategory">
                         <Form.Label>Categoría</Form.Label>
                         <Form.Select value={category} onChange={handleCategoryChange}>
                             <option value="Personal">Personal</option>
@@ -138,7 +175,8 @@ const TodoList: React.FC = () => {
                             <option value="Estudio">Estudio</option>
                         </Form.Select>
                     </Form.Group>
-                    <Form.Group className="mb-3">
+
+                    <Form.Group className="mb-3" controlId="formBasicPriority">
                         <Form.Label>Prioridad</Form.Label>
                         <Form.Select value={priority} onChange={handlePriorityChange}>
                             <option value="Baja">Baja</option>
@@ -146,16 +184,28 @@ const TodoList: React.FC = () => {
                             <option value="Alta">Alta</option>
                         </Form.Select>
                     </Form.Group>
-                    <Form.Group className="mb-3">
+
+                    <Form.Group className="mb-3" controlId="formBasicDueDate">
                         <Form.Label>Fecha de Vencimiento</Form.Label>
-                        <Form.Control type="date" value={dueDate} onChange={handleDueDateChange} />
+                        <Form.Control
+                            type="date"
+                            value={dueDate}
+                            onChange={handleDueDateChange}
+                        />
                     </Form.Group>
-                    <Form.Group className="mb-3">
+
+                    <Form.Group className="mb-3" controlId="formBasicNotes">
                         <Form.Label>Notas</Form.Label>
-                        <Form.Control as="textarea" placeholder="Notes" value={notes} onChange={handleNotesChange} />
+                        <Form.Control
+                            as="textarea"
+                            rows={3}
+                            value={notes}
+                            onChange={handleNotesChange}
+                        />
                     </Form.Group>
-                    <Button variant="primary" onClick={handleAddTodo} className="rounded-0">
-                        Añadir to do
+
+                    <Button variant="primary" onClick={handleAddTodo}>
+                        Agregar Tarea
                     </Button>
                 </Form>
                 <ListGroup>
@@ -174,7 +224,7 @@ const TodoList: React.FC = () => {
                                     cursor: 'pointer',
                                     transition: 'text-decoration 0.3s ease',
                                 }}
-                                onClick={() => handleToggleTodo(todo.id)}
+                                onClick={() => handleToggleTodo(todo.id, todo.completed)}
                             >
                                 {todo.text}
                             </div>
