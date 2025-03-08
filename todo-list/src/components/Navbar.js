@@ -3,7 +3,6 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../contexts/UserContext';
 import { auth } from '../firebase';
-import Link from 'next/link';
 import { Navbar as BootstrapNavbar, Container, Nav } from 'react-bootstrap'; // Importa Navbar de Bootstrap
 
 const Navbar = () => {
