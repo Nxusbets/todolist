@@ -9,29 +9,36 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export default function Home() {
-    const { user } = useContext(UserContext);
-    console.log(user);
+  const { user } = useContext(UserContext);
+  console.log(user);
 
-    if (user) {
-        return (
-            <>
-                <Navbar />
-                <TodoList />
-                <Footer />
-            </>
-        );
-    }
-
+  if (user) {
     return (
-        <>
-            <Navbar />
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-                <LoginForm />
-                <p style={{ marginTop: '1rem' }}>
-                    ¿No tienes una cuenta? <Link href="/register">Regístrate gratis</Link>
-                </p>
-            </div>
-            
-        </>
+      <>
+        <Navbar />
+        <TodoList />
+        <Footer />
+      </>
     );
+  }
+
+  return (
+    <>
+      <Navbar />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <LoginForm />
+        <p style={{ marginTop: "1rem" }}>
+          ¿No tienes una cuenta? <Link href="/register">Regístrate gratis</Link>
+        </p>
+      </div>
+    </>
+  );
 }
