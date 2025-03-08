@@ -1,0 +1,52 @@
+.notebook-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.notebook-page {
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    width: 90%;
+}
+
+.todo-details {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+.todo-details small {
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
+/* Estilos para el modo oscuro */
+body.dark-mode .notebook-container {
+    background-color: #333;
+}
+
+body.dark-mode .notebook-page {
+    background-color: #444;
+    color: white;
+}
+
+body.dark-mode .notebook-page .form-control,
+body.dark-mode .notebook-page .form-select,
+body.dark-mode .notebook-page .form-control:focus,
+body.dark-mode .notebook-page .form-select:focus {
+    background-color: #555;
+    color: white;
+    border-color: #777;
+}
+
+body.dark-mode .notebook-page .list-group-item {
+    background-color: #555;
+    color: white;
+}
