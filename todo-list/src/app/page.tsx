@@ -34,7 +34,7 @@ export default function Home() {
           minHeight: "100vh",
         }}
       >
-        <LoginForm />
+        <LoginForm onClose={() => {}} />
         <p style={{ marginTop: "1rem" }}>
           ¿No tienes una cuenta? <Link href="/register">Regístrate gratis</Link>
         </p>
