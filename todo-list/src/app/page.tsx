@@ -1,44 +1,40 @@
 "use client";
-
-import React, { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
-import TodoList from "@/components/TodoList";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useContext, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { UserContext } from "@/contexts/UserContext";
+import TodoList from "@/app/todolist/page";
 import LoginForm from "@/components/LoginForm";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
-export default function Home() {
-  const { user } = useContext(UserContext);
-  console.log(user);
+export default function Page() {
+  const userContext = useContext(UserContext);
+  const router = useRouter();
 
-  if (user) {
-    return (
-      <>
-        <Navbar />
-        <TodoList />
-        <Footer />
-      </>
-    );
+  if (!userContext) {
+    return <p>Error: UserContext no está disponible.</p>;
   }
 
-  return (
-    <>
-      <Navbar />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <LoginForm onClose={() => {}} />
-        <p style={{ marginTop: "1rem" }}>
-          ¿No tienes una cuenta? <Link href="/register">Regístrate gratis</Link>
-        </p>
-      </div>
-    </>
+  const { user, loading } = userContext;
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace("/todolist"); // Evita redirecciones infinitas
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return <p>Cargando...</p>;
+  }
+
+  return user ? (
+    <TodoList />
+  ) : (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <LoginForm />
+      <p className="mt-4">
+        ¿No tienes una cuenta? <Link href="/register">Regístrate gratis</Link>
+      </p>
+    </div>
   );
 }

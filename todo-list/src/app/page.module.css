@@ -1,23 +1,15 @@
-.page {
+:root {
   --gray-rgb: 0, 0, 0;
   --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
   --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
 
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
-
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
-  min-height: 100svh;
-  padding: 80px;
-  gap: 64px;
-  font-family: var(--font-geist-sans);
+  --transition-speed: 0.3s;
 }
 
 @media (prefers-color-scheme: dark) {
-  .page {
+  :root {
     --gray-rgb: 255, 255, 255;
     --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
     --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
@@ -25,6 +17,19 @@
     --button-primary-hover: #ccc;
     --button-secondary-hover: #1a1a1a;
   }
+}
+
+.page {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: center;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 80px;
+  gap: 64px;
+  font-family: var(--font-geist-sans);
+  background: var(--gray-alpha-100);
+  transition: background var(--transition-speed), color var(--transition-speed);
 }
 
 .main {
@@ -66,19 +71,14 @@
   border-radius: 128px;
   height: 48px;
   padding: 0 20px;
-  border: none;
   border: 1px solid transparent;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  line-height: 20px;
   font-weight: 500;
+  transition: background var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
 }
 
 a.primary {
@@ -96,6 +96,7 @@ a.secondary {
   grid-row-start: 3;
   display: flex;
   gap: 24px;
+  transition: opacity var(--transition-speed);
 }
 
 .footer a {
@@ -108,7 +109,7 @@ a.secondary {
   flex-shrink: 0;
 }
 
-/* Enable hover only on non-touch devices */
+/* Hover effects solo para dispositivos con puntero */
 @media (hover: hover) and (pointer: fine) {
   a.primary:hover {
     background: var(--button-primary-hover);
@@ -126,10 +127,12 @@ a.secondary {
   }
 }
 
+/* Optimización para móviles */
 @media (max-width: 600px) {
   .page {
     padding: 32px;
     padding-bottom: 80px;
+    gap: 32px;
   }
 
   .main {

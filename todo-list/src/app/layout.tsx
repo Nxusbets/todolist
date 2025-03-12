@@ -1,22 +1,15 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { UserProvider } from "../contexts/UserContext";
+"use client";
 
-export const metadata: Metadata = {
-  title: "To do list",
-  description: "Una app de NxuS",
-};
+import { UserProvider } from "@/contexts/UserContext";
+import Layout from "@/components/Layout";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body>
-        <UserProvider>{children}</UserProvider>
+        <UserProvider>
+          <Layout>{children}</Layout> {/* Asegura que el Layout esté en toda la app */}
+        </UserProvider>
       </body>
     </html>
   );
