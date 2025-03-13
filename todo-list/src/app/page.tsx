@@ -12,7 +12,9 @@ export default function Page() {
   const userContext = useContext(UserContext);
   const router = useRouter();
 
-  // ✅ Mueve la verificación de userContext dentro del useEffect
+  const user = userContext?.user;
+  const loading = userContext?.loading;
+
   useEffect(() => {
     if (!userContext) {
       console.error("Error: UserContext no está disponible.");
@@ -26,17 +28,15 @@ export default function Page() {
     }
   }, [userContext]);
 
-  if (!userContext) {
-    return <p>Error: UserContext no está disponible.</p>;
-  }
-
-  const { user, loading } = userContext;
-
   useEffect(() => {
     if (!loading && user) {
       router.replace("/todolist"); // Evita redirecciones infinitas
     }
   }, [user, loading, router]);
+
+  if (!userContext) {
+    return <p>Error: UserContext no está disponible.</p>;
+  }
 
   if (loading) {
     return <p>Cargando...</p>;
