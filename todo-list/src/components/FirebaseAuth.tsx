@@ -1,38 +1,29 @@
 // FirebaseAuth.tsx
-import React, { useEffect, useRef } from 'react';
-import { auth } from '../firebase'; // Importa la instancia de autenticación
-import * as firebaseui from 'firebaseui';
-import 'firebaseui/dist/firebaseui.css';
+import React, { useEffect, useRef } from "react";
+import { auth } from "@/firebase"; // Asegúrate de que la ruta es correcta
+import * as firebaseui from "firebaseui";
+import { EmailAuthProvider } from "firebase/auth"; // ✅ Importar correctamente
+import "firebaseui/dist/firebaseui.css";
 
 const FirebaseAuth = () => {
-  const uiRef = useRef(null);
+  const uiRef = useRef<HTMLDivElement | null>(null); // ✅ Especificar tipo
 
   useEffect(() => {
-    if (!uiRef.current) {
-      return;
-    }
+    if (!uiRef.current) return;
 
     const ui = new firebaseui.auth.AuthUI(auth);
 
     ui.start(uiRef.current, {
       signInOptions: [
-        // Lista de proveedores de autenticación
-        auth.EmailAuthProvider.PROVIDER_ID,
-        auth.GoogleAuthProvider.PROVIDER_ID,
-        // Agrega otros proveedores según sea necesario
+        EmailAuthProvider.PROVIDER_ID, // ✅ Solo login con email
       ],
-      // Otras configuraciones
+      signInFlow: "popup", // Evita redirecciones innecesarias
       callbacks: {
-        signInSuccessWithAuthResult: () => {
-          // Lógica después de un inicio de sesión exitoso
-          return false; // Evita la redirección predeterminada
-        },
+        signInSuccessWithAuthResult: () => false, // Evita redirección tras login
       },
     });
 
-    return () => {
-      ui.delete(); // Limpia Firebase UI al desmontar el componente
-    };
+    return () => ui.delete(); // ✅ Limpiar UI al desmontar
   }, []);
 
   return <div ref={uiRef} />;
