@@ -91,3 +91,11 @@ li:hover {
     color-scheme: dark;
   }
 }
+
+.text-primary {
+  text-decoration: none;
+}
+
+.text-primary:hover {
+  text-decoration: underline;
+}

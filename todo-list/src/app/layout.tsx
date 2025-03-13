@@ -1,5 +1,6 @@
 "use client";
 
+import "bootstrap/dist/css/bootstrap.min.css";
 import { UserProvider } from "@/contexts/UserContext";
 import Layout from "@/components/Layout";
 

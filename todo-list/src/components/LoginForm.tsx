@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Para redireccionar
-import { auth } from "@/firebase"; // Asegura que el path es correcto
+import { useRouter } from "next/navigation"; // Para redirección
+import { auth } from "@/firebase"; 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Button, Form, Alert, Card, Container } from "react-bootstrap";
 
@@ -22,19 +22,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose }) => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      console.log("Usuario autenticado:", auth.currentUser);
-      router.push("/todolist"); // Redirigir al usuario después de login
+      console.log("✅ Usuario autenticado:", auth.currentUser);
+      router.push("/todolist"); // Redirigir al usuario después del login
     } catch (err) {
-      console.error("Error al iniciar sesión:", err);
+      console.error("❌ Error al iniciar sesión:", err);
       setError("⚠️ Correo o contraseña incorrectos.");
     }
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+    <Container
+      className="d-flex justify-content-center align-items-center"
+      style={{ minHeight: "100vh" }}
+    >
       <Card className="p-4 shadow-lg" style={{ maxWidth: "400px", width: "100%" }}>
         <h2 className="text-center text-primary fw-bold">Iniciar Sesión</h2>
-        
+
         {error && <Alert variant="danger" className="text-center">{error}</Alert>}
 
         <Form onSubmit={handleLogin}>
@@ -65,11 +68,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose }) => {
           </Button>
         </Form>
 
+        {/* Botón Cerrar (solo si se pasa la prop `onClose`) */}
         {onClose && (
           <Button variant="secondary" onClick={onClose} className="mt-2 w-100">
             ❌ Cerrar
           </Button>
         )}
+
+        {/* Enlace de Registro */}
+        <div className="text-center mt-3">
+          ¿No tienes cuenta?{" "}
+          <a href="/register" className="text-primary fw-bold">
+            Regístrate gratis
+          </a>
+        </div>
       </Card>
     </Container>
   );

@@ -1,77 +1,66 @@
 "use client";
 
 import React, { useContext } from "react";
-import { UserContext } from "@/contexts/UserContext";
-import { auth } from "@/firebase";
-import { useRouter } from "next/navigation";
-import { Navbar as BootstrapNavbar, Container, Nav, Image } from "react-bootstrap";
+import Link from "next/link";
+import { useRouter } from "next/navigation"; // ✅ Importa useRouter
+import { Navbar, Nav, Button, Container } from "react-bootstrap";
+import { UserContext } from "../contexts/UserContext";
+import { auth } from "../firebase";
+import { signOut } from "firebase/auth";
 
-const Navbar = () => {
+const MyNavbar: React.FC = () => {
   const { user } = useContext(UserContext);
-  const router = useRouter();
+  const router = useRouter(); // ✅ Usa el router para redireccionar
 
   const handleLogout = async () => {
-    await auth.signOut();
-    router.push("/");
+    try {
+      await signOut(auth); // ✅ Corrección en la función de logout
+      router.push("/login"); // ✅ Redirigir a login después de cerrar sesión
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
 
   return (
-    <BootstrapNavbar bg="dark" variant="dark" expand="lg" className="shadow-lg">
+    <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
-        {/* Logo */}
-        <BootstrapNavbar.Brand href="/todolist" className="fw-bold text-warning fs-4">
-          ✅ To-Do List Pro
-        </BootstrapNavbar.Brand>
-        <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
-        <BootstrapNavbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto align-items-center">
+        <Navbar.Brand as={Link} href="/">
+          To-Do List NxuS
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="navbar-nav" />
+        <Navbar.Collapse id="navbar-nav">
+          <Nav className="me-auto">
+            {user && (
+              <Nav.Link as={Link} href="/mis-todo">
+                Mis To-Do
+              </Nav.Link>
+            )}
+          </Nav>
+          <Nav className="ms-auto">
             {user ? (
               <>
-                {/* Avatar y Email */}
-                <span className="text-light me-3 d-flex align-items-center">
-                  {user.photoURL ? (
-                    <Image
-                      src={user.photoURL}
-                      alt="Avatar"
-                      width={35}
-                      height={35}
-                      roundedCircle
-                      className="border border-warning me-2"
-                    />
-                  ) : (
-                    <span className="fw-semibold">{user.email}</span>
-                  )}
-                </span>
-                {/* Botón de Logout */}
-                <Nav.Link onClick={handleLogout} className="text-warning fw-bold">
-                  🔓 Cerrar sesión
+                <Nav.Link disabled className="text-light">
+                  ✉️ {user.email}
                 </Nav.Link>
+                <Button variant="outline-light" onClick={handleLogout}>
+                  Cerrar Sesión
+                </Button>
               </>
             ) : (
               <>
-                <Nav.Link href="/" className="text-light fw-semibold">
-                  🔑 Iniciar sesión
+                <Nav.Link as={Link} href="/login">
+                  Iniciar Sesión
                 </Nav.Link>
-                <Nav.Link href="/register" className="text-light fw-semibold">
-                  📝 Registrarse
+                <Nav.Link as={Link} href="/register">
+                  Registrarse
                 </Nav.Link>
               </>
             )}
           </Nav>
-        </BootstrapNavbar.Collapse>
+        </Navbar.Collapse>
       </Container>
-
-      {/* Estilos con Bootstrap */}
-      <style jsx>{`
-        .text-warning:hover {
-          color: #FFA500 !important;
-        }
-        .border-warning {
-          border-color: #FFD700 !important;
-        }
-      `}</style>
-    </BootstrapNavbar>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default MyNavbar;
