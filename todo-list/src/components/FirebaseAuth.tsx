@@ -6,7 +6,7 @@ import { EmailAuthProvider } from "firebase/auth"; // ✅ Importar correctamente
 import "firebaseui/dist/firebaseui.css";
 
 const FirebaseAuth = () => {
-  const uiRef = useRef<HTMLDivElement | null>(null); // ✅ Especificar tipo
+  const uiRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!uiRef.current) return;
@@ -14,16 +14,17 @@ const FirebaseAuth = () => {
     const ui = new firebaseui.auth.AuthUI(auth);
 
     ui.start(uiRef.current, {
-      signInOptions: [
-        EmailAuthProvider.PROVIDER_ID, // ✅ Solo login con email
-      ],
-      signInFlow: "popup", // Evita redirecciones innecesarias
+      signInOptions: [EmailAuthProvider.PROVIDER_ID], // ✅ Solo login con email
+      signInFlow: "popup",
       callbacks: {
-        signInSuccessWithAuthResult: () => false, // Evita redirección tras login
+        signInSuccessWithAuthResult: () => false,
       },
     });
 
-    return () => ui.delete(); // ✅ Limpiar UI al desmontar
+    // ✅ La limpieza no debe ser una función async
+    return () => {
+      ui.delete().catch((error) => console.error("Error al limpiar Firebase UI:", error));
+    };
   }, []);
 
   return <div ref={uiRef} />;
