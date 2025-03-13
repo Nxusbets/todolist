@@ -5,7 +5,7 @@ import { auth } from "@/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 
 interface UserContextType {
-  user: { uid: string } | null;
+  user: User | null;
   loading: boolean;
   logout: () => void;
 }
@@ -19,14 +19,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setLoading(false); // ✅ Asegurar que loading se actualice
+      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  const logout = () => {
-    auth.signOut().then(() => setUser(null));
+  const logout = async () => {
+    await auth.signOut();
+    setUser(null);
   };
 
   return (
