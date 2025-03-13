@@ -9,7 +9,14 @@ import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 
 const MyNavbar: React.FC = () => {
-  const { user } = useContext(UserContext);
+    const userContext = useContext(UserContext);
+
+    if (!userContext) {
+      return null; // O algún componente de carga/error
+    }
+    
+    const { user } = userContext;
+    
   const router = useRouter(); // ✅ Usa el router para redireccionar
 
   const handleLogout = async () => {
