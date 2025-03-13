@@ -19,28 +19,28 @@ interface Todo {
 const MisToDo: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   
-  // Validación para evitar que `useContext` devuelva null
+  // Obtiene el contexto, asegurando que no sea null
   const userContext = useContext(UserContext);
-  if (!userContext) {
-    return <p className="text-center text-danger">Error: No se pudo cargar el contexto de usuario.</p>;
-  }
-  const { user } = userContext;
+  const user = userContext?.user || null; // Evita errores si el contexto es null
 
+  // ✅ Siempre llamar useEffect, manejar la condición dentro
   useEffect(() => {
-    if (user) {
-      const todoCollection = collection(db, "users", user.uid, "todos");
-      const unsubscribe = onSnapshot(todoCollection, (snapshot) => {
-        const todosData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Todo[];
-        setTodos(todosData);
-      });
-      return unsubscribe;
-    } else {
+    if (!user) {
       setTodos([]);
+      return;
     }
-  }, [user]);
+
+    const todoCollection = collection(db, "users", user.uid, "todos");
+    const unsubscribe = onSnapshot(todoCollection, (snapshot) => {
+      const todosData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Todo[];
+      setTodos(todosData);
+    });
+
+    return () => unsubscribe();
+  }, [user]); // Depende de `user`
 
   const handleToggleTodo = async (id: string, completed: boolean) => {
     if (!user) return;
@@ -178,4 +178,3 @@ const MisToDo: React.FC = () => {
 };
 
 export default MisToDo;
-
