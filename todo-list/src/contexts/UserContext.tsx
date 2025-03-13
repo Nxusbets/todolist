@@ -5,7 +5,7 @@ import { auth } from "@/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 
 interface UserContextType {
-  user: User | null;
+  user: { uid: string } | null;
   loading: boolean;
   logout: () => void;
 }

@@ -16,7 +16,8 @@ const ToDoList: React.FC = () => {
   const [dueDate, setDueDate] = useState("");
   const [notes, setNotes] = useState("");
   const [alert, setAlert] = useState(false);
-  const { user } = useContext(UserContext);
+  const userContext = useContext(UserContext);
+  const user = userContext?.user || null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
