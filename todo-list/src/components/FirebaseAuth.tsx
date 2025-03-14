@@ -1,8 +1,8 @@
 // FirebaseAuth.tsx
 import React, { useEffect, useRef } from "react";
-import { auth } from "@/firebase"; // Asegúrate de que la ruta es correcta
+import { auth } from "@/firebase"; 
 import * as firebaseui from "firebaseui";
-import { EmailAuthProvider } from "firebase/auth"; // ✅ Importar correctamente
+import { EmailAuthProvider } from "firebase/auth"; 
 import "firebaseui/dist/firebaseui.css";
 
 const FirebaseAuth = () => {
@@ -21,7 +21,7 @@ const FirebaseAuth = () => {
       },
     });
 
-    // ✅ La limpieza no debe ser una función async
+    
     return () => {
       ui.delete().catch((error) => console.error("Error al limpiar Firebase UI:", error));
     };

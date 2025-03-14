@@ -2,14 +2,14 @@
 
 import React, { useContext } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // ✅ Importa useRouter correctamente
+import { useRouter } from "next/navigation"; 
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import { UserContext } from "../contexts/UserContext";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 
 const MyNavbar: React.FC = () => {
-  const router = useRouter(); // ✅ Mueve useRouter arriba para evitar errores con hooks
+  const router = useRouter(); 
   const userContext = useContext(UserContext);
   const user = userContext?.user; // ✅ Evita error cuando userContext es null
 

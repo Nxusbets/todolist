@@ -9,7 +9,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es">
       <body>
         <UserProvider>
-          <Layout>{children}</Layout> {/* Asegura que el Layout esté en toda la app */}
+          <Layout>{children}</Layout> 
         </UserProvider>
       </body>
     </html>

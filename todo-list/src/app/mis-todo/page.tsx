@@ -19,11 +19,11 @@ interface Todo {
 const MisToDo: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   
-  // Obtiene el contexto, asegurando que no sea null
+  
   const userContext = useContext(UserContext);
   const user = userContext?.user || null; // Evita errores si el contexto es null
 
-  // ✅ Siempre llamar useEffect, manejar la condición dentro
+  
   useEffect(() => {
     if (!user) {
       setTodos([]);
